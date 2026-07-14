@@ -2,16 +2,19 @@
 
 import { useRef, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   Folder as FolderIcon,
   List,
+  LogOut,
   Moon,
   Plus,
   Sun,
   Trash2,
   X,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -49,6 +52,13 @@ export function TodoList({
   const folderFormRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const { resolvedTheme, setTheme } = useTheme();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    router.push("/login");
+    router.refresh();
+  };
 
   const activeFolder = folders.find((f) => f.id === activeFolderId);
 
@@ -140,8 +150,8 @@ export function TodoList({
           </Button>
         </form>
 
-        {/* 다크 모드 토글 — 사이드바 맨 아래 */}
-        <div className="mt-8 border-t pt-3">
+        {/* 다크 모드 토글 · 로그아웃 — 사이드바 맨 아래 */}
+        <div className="mt-8 space-y-1 border-t pt-3">
           <Button
             variant="ghost"
             size="sm"
@@ -154,6 +164,15 @@ export function TodoList({
             <Moon className="hidden size-4 dark:block" />
             <span className="dark:hidden">다크 모드</span>
             <span className="hidden dark:inline">라이트 모드</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 text-red-500 hover:text-red-600"
+            onClick={handleLogout}
+          >
+            <LogOut className="size-4" />
+            로그아웃
           </Button>
         </div>
       </aside>
