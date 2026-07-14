@@ -10,9 +10,11 @@ export default async function MembersPage() {
     redirect("/login");
   }
 
-  const { rows: members } = await pool.query(
-    `select name, email, "createdAt" from "user" order by "createdAt" desc`
-  );
+  const { rows: members } = await pool.query<{
+    name: string;
+    email: string;
+    createdAt: string;
+  }>(`select name, email, "createdAt" from "user" order by "createdAt" desc`);
 
   return (
     <main className="mx-auto max-w-xl p-8">
